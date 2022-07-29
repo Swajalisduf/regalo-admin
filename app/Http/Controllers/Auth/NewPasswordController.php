@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -22,10 +23,32 @@ class NewPasswordController extends Controller
      */
     public function create(Request $request)
     {
-        return Inertia::render('Auth/ResetPassword', [
-            'email' => $request->email,
-            'token' => $request->route('token'),
-        ]);
+      return Inertia::render('Auth/ResetPassword', [
+          'email' => $request->email,
+          'token' => $request->route('token'),
+      ]);
+    }
+
+    /**
+     * Check if user needs to reset password
+     * 
+     * @return \Inertia\Response
+     */
+    public function checkPasswordReset(Request $request) {
+      $loginUser = User::where('email', $request->email)->first();
+
+      if ($loginUser && !$loginUser->password) {
+        return redirect()->route('password.reset.new', ['email' => $request->email, 'name' => $loginUser->name]);
+      }
+
+      return redirect()->route('login', ['userEmail' => $request->email], 303);
+    }
+
+    public function setNewUserPassword(Request $request) {
+      return Inertia::render('Auth/SetNewUserPassword', [
+        'email' => $request->email,
+        'name' => $request->name
+      ]);
     }
 
     /**

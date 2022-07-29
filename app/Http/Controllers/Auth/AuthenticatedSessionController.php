@@ -17,11 +17,12 @@ class AuthenticatedSessionController extends Controller
      *
      * @return \Inertia\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         return Inertia::render('Auth/Login', [
             'canResetPassword' => Route::has('password.request'),
             'status' => session('status'),
+            'userEmail' => $request->userEmail,
         ]);
     }
 
@@ -33,11 +34,11 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
-        $request->authenticate();
+      $request->authenticate();
 
-        $request->session()->regenerate();
+      $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+      return redirect()->intended(RouteServiceProvider::HOME);
     }
 
     /**
