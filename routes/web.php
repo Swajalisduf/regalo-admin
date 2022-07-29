@@ -34,7 +34,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', function () {
       return Inertia::render('Users/index', ['users' => User::get()]);
     })->name('users.view');
-    Route::get('/create', function (Request $request) {
+    Route::get('/create', function () {
       return Inertia::render('Users/CreateUser');
     })->name('users.create.view');
     Route::get('/{id}/measurements', function ($id) {
