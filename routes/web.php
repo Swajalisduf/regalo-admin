@@ -27,6 +27,9 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
+  Route::get('/', function () {
+    return redirect()->route('dashboard.view');
+  })->name('dashboard.view');
   Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
   })->name('dashboard.view');
