@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { camelCase } from "lodash";
 
 import { Inertia } from "@inertiajs/inertia";
@@ -12,14 +12,14 @@ import {
   Button,
 } from "@/Components";
 
-const MeasurementsForm = ({ fields, user, values }) => {
+const MeasurementsForm = ({ fields, id, values }) => {
   const textFields = ["tshirtSize"];
   const [message, setMessage] = useState(null);
   const { data, setData, put } = useForm(values);
 
   const onSubmit = (e) => {
     e.preventDefault();
-    put(route("users.measurements.update", { id: user.id }), data);
+    put(route("users.measurements.update", { id: id }), data);
     setMessage("submitted woot");
     setTimeout(() => {
       setMessage(null);
@@ -65,17 +65,7 @@ const MeasurementsForm = ({ fields, user, values }) => {
   );
 };
 
-const Measurements = ({ user, userMeasurements, auth, errors }) => {
-  const measurements =
-    userMeasurements &&
-    Object.keys(userMeasurements).reduce(
-      (prevVal, currentVal) => ({
-        ...prevVal,
-        [camelCase(currentVal)]: userMeasurements[currentVal],
-      }),
-      {}
-    );
-
+const Measurements = ({ user: { id, measurements, name }, auth, errors }) => {
   const fields = {
     height: "Height",
     weight: "Weight",
@@ -101,12 +91,12 @@ const Measurements = ({ user, userMeasurements, auth, errors }) => {
       ...prevVal,
       [currentVal]: measurements ? measurements[currentVal] || "" : "",
     }),
-    { userId: user.id }
+    { userId: id }
   );
 
   const handleClick = (e) => {
     e.preventDefault();
-    Inertia.post(route("users.measurements.create", { id: user.id }));
+    Inertia.post(route("users.measurements.create", { id: id }));
   };
 
   return (
@@ -114,19 +104,17 @@ const Measurements = ({ user, userMeasurements, auth, errors }) => {
       {...{
         auth,
         errors,
-        header: <Header headerText={`${user.name} > Measurements`} />,
+        header: <Header headerText={`${name} > Measurements`} />,
       }}
     >
       <Head title="Measurements" />
       <PageContentWrapper>
-        {!userMeasurements && (
+        {!measurements && (
           <Button type="button" onClick={handleClick}>
             Add User Measurements
           </Button>
         )}
-        {measurements && (
-          <MeasurementsForm fields={fields} values={values} user={user} />
-        )}
+        {measurements && <MeasurementsForm {...{ fields, id, values }} />}
       </PageContentWrapper>
     </Authenticated>
   );

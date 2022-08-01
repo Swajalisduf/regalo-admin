@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Resources\UserResource;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -41,9 +42,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
       return Inertia::render('Users/CreateUser');
     })->name('users.create.view');
     Route::get('/{id}/measurements', function ($id) {
+      $user = new UserResource(User::findOrFail($id)->load('measurements'));
+
       return Inertia::render('Users/Measurements', [
-        'user' => User::where('id', $id)->first(),
-        'userMeasurements' => Measurement::where('user_id', $id)->first(),
+        'user' => collect($user)->only('id', 'measurements', 'name'),
       ]);
     })->name('users.measurements.view');
   });
