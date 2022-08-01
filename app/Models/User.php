@@ -24,11 +24,11 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'created_at',
-        'updated_at',
+      'name',
+      'email',
+      'password',
+      'created_at',
+      'updated_at',
     ];
 
     /**
@@ -37,8 +37,8 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+      'password',
+      'remember_token',
     ];
 
     /**
@@ -47,7 +47,7 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+      'email_verified_at' => 'datetime',
     ];
 
     /**
@@ -57,9 +57,19 @@ class User extends Authenticatable
      */
     public function measurements(): HasOne
     {
-        return $this->hasOne(Measurement::class, 'user_id', 'id');
+      return $this->hasOne(Measurement::class, 'user_id', 'id');
     }
 
+    /**
+     * Get the productions that belong to the User
+     *
+     * @return \App\Models\BelongsToMany
+     */
+    public function productions(): BelongsToMany
+    {
+      return $this->belongsToMany(Production::class);
+    }
+ 
     /**
      * The theater companies that belong to the User
      *
@@ -67,6 +77,6 @@ class User extends Authenticatable
      */
     public function theaterCompanies(): BelongsToMany
     {
-        return $this->belongsToMany(TheaterCompany::class)->withTimestamps();
+      return $this->belongsToMany(TheaterCompany::class)->withTimestamps();
     } 
 }

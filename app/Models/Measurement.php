@@ -34,14 +34,4 @@ class Measurement extends Model
       'created_at',
       'updated_at',
     ];
-
-    /**
-     * Get the user associated with the Measurement
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'id', 'user_id');
-    }
 }
