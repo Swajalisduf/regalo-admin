@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 class Measurement extends Model
@@ -30,5 +31,17 @@ class Measurement extends Model
       'inseam',
       'outseam',
       'ankle',
+      'created_at',
+      'updated_at',
     ];
+
+    /**
+     * Get the user associated with the Measurement
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'id', 'user_id');
+    }
 }
