@@ -31,7 +31,5 @@ class Measurement extends Model
       'inseam',
       'outseam',
       'ankle',
-      'created_at',
-      'updated_at',
     ];
 }

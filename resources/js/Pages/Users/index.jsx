@@ -1,8 +1,6 @@
 import React from "react";
-import axios from "axios";
 
 import { Button, Header } from "@/Components";
-import { useAsync } from "@/hooks";
 import { Head } from "@inertiajs/inertia-react";
 import Authenticated from "@/Layouts/Authenticated";
 
@@ -14,7 +12,7 @@ const Users = ({ auth, errors, users }) => {
     <Authenticated
       auth={auth}
       errors={errors}
-      header={<Header headerText={"Users"} />}
+      header={<Header headerText="Users" />}
     >
       <Head title="Users" />
       <PageContentWrapper>

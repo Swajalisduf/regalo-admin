@@ -7,6 +7,7 @@ export default function Button({
   children,
   className = "",
   href = "",
+  method = "get",
   processing,
   type = "submit",
   onClick = () => {},
@@ -22,7 +23,13 @@ export default function Button({
       disabled={processing}
       onClick={onClick}
     >
-      {href ? <Link href={href}>{children}</Link> : children}
+      {href ? (
+        <Link href={href} method={method}>
+          {children}
+        </Link>
+      ) : (
+        children
+      )}
     </button>
   );
 }
