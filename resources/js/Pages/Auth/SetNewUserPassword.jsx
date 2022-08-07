@@ -5,6 +5,7 @@ import Input from "@/Components/Input";
 import Label from "@/Components/Label";
 import ValidationErrors from "@/Components/ValidationErrors";
 import { Head, useForm } from "@inertiajs/inertia-react";
+import { useRoute } from "@/hooks";
 
 export default function SetNewUserPassword({ name, email }) {
   const { data, setData, post, processing, errors, reset } = useForm({
@@ -14,6 +15,7 @@ export default function SetNewUserPassword({ name, email }) {
     password_confirmation: "",
     existingUser: true,
   });
+  const route = useRoute();
 
   useEffect(() => {
     return () => {

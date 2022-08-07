@@ -6,7 +6,9 @@ import { rest } from "lodash";
 export default function Button({
   children,
   className = "",
+  "data-testid": dataTestId,
   href = "",
+  method = "get",
   processing,
   type = "submit",
   onClick = () => {},
@@ -19,10 +21,17 @@ export default function Button({
           processing && "opacity-25"
         } ` + className
       }
+      data-testid={dataTestId}
       disabled={processing}
       onClick={onClick}
     >
-      {href ? <Link href={href}>{children}</Link> : children}
+      {href ? (
+        <Link href={href} method={method}>
+          {children}
+        </Link>
+      ) : (
+        children
+      )}
     </button>
   );
 }

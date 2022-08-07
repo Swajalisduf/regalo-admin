@@ -5,6 +5,7 @@ import { Label } from "@/Components";
 export default function Input({
   autoComplete,
   className,
+  "data-testid": dataTestId,
   error,
   handleChange,
   isFocused,
@@ -27,6 +28,7 @@ export default function Input({
       {label && <Label className="mt-4" forInput={name} value={label} />}
       <div className="flex flex-col items-start">
         <input
+          data-testid={dataTestId}
           type={type}
           name={name}
           value={value}
@@ -39,7 +41,11 @@ export default function Input({
           required={required}
           onChange={(e) => handleChange(e)}
         />
-        {error && <small className="text-error">{error.message}</small>}
+        {error && (
+          <small data-testid={`${name}-error`} className="text-error">
+            {error}
+          </small>
+        )}
       </div>
     </>
   );

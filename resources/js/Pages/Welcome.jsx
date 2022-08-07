@@ -1,7 +1,9 @@
 import React from "react";
 import { Link, Head } from "@inertiajs/inertia-react";
+import { useRoute } from "@/hooks";
 
 export default function Welcome(props) {
+  const route = useRoute();
   return (
     <>
       <Head title="Welcome" />

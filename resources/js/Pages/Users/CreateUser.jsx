@@ -3,13 +3,15 @@ import React from "react";
 import { Button, Header, Input, PageContentWrapper } from "@/Components";
 import { Head, useForm } from "@inertiajs/inertia-react";
 import Authenticated from "@/Layouts/Authenticated";
-import { onHandleChange } from "@/utils";
+import { onHandleFormChange } from "@/utils";
+import { useRoute } from "@/hooks";
 
 const CreateUser = ({ auth, errors }) => {
   const { data, setData, post } = useForm({
     name: "",
     email: "",
   });
+  const route = useRoute();
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -33,7 +35,7 @@ const CreateUser = ({ auth, errors }) => {
             label="Name"
             name="name"
             autoComplete="name"
-            handleChange={(e) => onHandleChange(e, setData)}
+            handleChange={(e) => onHandleFormChange(e, setData)}
             value={data.name}
           />
           <Input
@@ -42,7 +44,7 @@ const CreateUser = ({ auth, errors }) => {
             label="Email"
             name="email"
             autoComplete="email"
-            handleChange={(e) => onHandleChange(e, setData)}
+            handleChange={(e) => onHandleFormChange(e, setData)}
             value={data.email}
           />
           <Button className="mt-4" type="submit">

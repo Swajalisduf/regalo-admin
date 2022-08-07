@@ -4,8 +4,8 @@ use App\Http\Resources\UserResource;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\VenueController;
 use App\Models\User;
-use App\Models\Measurement;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +34,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
   Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
   })->name('dashboard.view');
+
   Route::prefix('/users')->group(function () {
     Route::get('/', function () {
       return Inertia::render('Users/index', ['users' => User::get()]);
@@ -48,6 +49,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         'user' => collect($user)->only('id', 'measurements', 'name'),
       ]);
     })->name('users.measurements.view');
+  });
+
+  Route::controller(VenueController::class)->group(function () {
+    Route::get('/venues', 'index')->name('venues.view');
   });
 });
 

@@ -1,8 +1,5 @@
-import React from 'react';
-import RegaloLogo from '../images/regalo-logo-full.png';
+import React from "react";
 
 export default function ApplicationLogo({ className }) {
-    return (
-      <h1>RTC Admin</h1>
-    );
+  return <h1>RTC Admin</h1>;
 }

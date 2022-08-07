@@ -1,1 +1,3 @@
-export * from './useAsync';
+import useRoute from "./useRoute";
+
+export { useRoute };

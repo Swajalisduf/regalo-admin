@@ -5,6 +5,7 @@ import Guest from "@/Layouts/Guest";
 import Input from "@/Components/Input";
 import ValidationErrors from "@/Components/ValidationErrors";
 import { Head, Link, useForm } from "@inertiajs/inertia-react";
+import { useRoute } from "@/hooks";
 
 export default function Login({ status, canResetPassword, userEmail = "" }) {
   const { data, setData, post, processing, errors, reset } = useForm({
@@ -12,6 +13,7 @@ export default function Login({ status, canResetPassword, userEmail = "" }) {
     password: "",
     remember: "",
   });
+  const route = useRoute();
 
   const [step, setStep] = useState(1);
 

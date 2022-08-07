@@ -1,20 +1,20 @@
 import React from "react";
-import axios from "axios";
 
 import { Button, Header } from "@/Components";
-import { useAsync } from "@/hooks";
 import { Head } from "@inertiajs/inertia-react";
 import Authenticated from "@/Layouts/Authenticated";
 
 import User from "./User";
 import PageContentWrapper from "@/Components/PageContentWrapper";
+import { useRoute } from "@/hooks";
 
 const Users = ({ auth, errors, users }) => {
+  const route = useRoute();
   return (
     <Authenticated
       auth={auth}
       errors={errors}
-      header={<Header headerText={"Users"} />}
+      header={<Header headerText="Users" />}
     >
       <Head title="Users" />
       <PageContentWrapper>
