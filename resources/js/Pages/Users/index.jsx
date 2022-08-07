@@ -6,8 +6,10 @@ import Authenticated from "@/Layouts/Authenticated";
 
 import User from "./User";
 import PageContentWrapper from "@/Components/PageContentWrapper";
+import { useRoute } from "@/hooks";
 
 const Users = ({ auth, errors, users }) => {
+  const route = useRoute();
   return (
     <Authenticated
       auth={auth}

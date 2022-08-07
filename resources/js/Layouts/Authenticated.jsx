@@ -4,11 +4,13 @@ import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { Link } from "@inertiajs/inertia-react";
+import { useRoute } from "@/hooks";
 
 export default function Authenticated({ auth, header, children }) {
   const [showingNavigationDropdown, setShowingNavigationDropdown] =
     useState(false);
 
+  const route = useRoute();
   return (
     <div className="min-h-screen bg-gray-100">
       <nav className="bg-white border-b border-gray-100">

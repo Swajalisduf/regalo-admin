@@ -6,6 +6,7 @@ import { rest } from "lodash";
 export default function Button({
   children,
   className = "",
+  "data-testid": dataTestId,
   href = "",
   method = "get",
   processing,
@@ -20,6 +21,7 @@ export default function Button({
           processing && "opacity-25"
         } ` + className
       }
+      data-testid={dataTestId}
       disabled={processing}
       onClick={onClick}
     >

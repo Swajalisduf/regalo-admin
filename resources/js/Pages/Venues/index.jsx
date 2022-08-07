@@ -1,12 +1,13 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useReducer } from "react";
 
 import Authenticated from "@/Layouts/Authenticated";
 import { Button, Header, PageContentWrapper } from "@/Components";
+import { useRoute } from "@/hooks";
 import { Head, useForm } from "@inertiajs/inertia-react";
 
 import VenueRow from "./VenueRow";
 
-const Venues = ({ venues, auth, errors }) => {
+const Venues = ({ venues, auth }) => {
   const {
     data,
     delete: destroy,
@@ -18,11 +19,12 @@ const Venues = ({ venues, auth, errors }) => {
     put,
     reset,
     setData,
-    setErrors,
+    setError,
   } = useForm({
     id: "",
     name: "",
   });
+  const route = useRoute();
 
   const reducer = (state, { payload = {}, type }) => {
     if (payload.e) {
@@ -38,7 +40,8 @@ const Venues = ({ venues, auth, errors }) => {
       case "edit":
         return { ...state, editMode: payload.id, createNew: false };
       case "error":
-        setErrors(payload.field, payload.message);
+        setError(payload.field, payload.message);
+        reset();
         return {
           ...state,
           submitting: false,
@@ -91,10 +94,7 @@ const Venues = ({ venues, auth, errors }) => {
 
   useEffect(() => {
     if (isDirty && submitting && data.name) {
-      if (data.id) {
-        dispatch({ type: "update", payload: { id: data.id } });
-        return;
-      } else if (
+      if (
         venues.find(
           (venue) => venue.name.toLowerCase() === data.name.toLowerCase()
         )
@@ -105,12 +105,18 @@ const Venues = ({ venues, auth, errors }) => {
         });
         return;
       }
+
+      if (data.id) {
+        dispatch({ type: "update", payload: { id: data.id } });
+        return;
+      }
       dispatch({ type: "create" });
     }
   }, [data.id, data.name, isDirty, submitting, venues]);
 
   useEffect(() => {
     reset();
+    clearErrors();
   }, [createNew, editMode]);
 
   useEffect(() => {
@@ -123,17 +129,16 @@ const Venues = ({ venues, auth, errors }) => {
     <Authenticated
       {...{
         auth,
-        errors,
         header: <Header headerText="Venues" />,
       }}
     >
       <Head title="Venues" />
-      <PageContentWrapper>
+      <PageContentWrapper data-testid="venues">
         <form
           onSubmit={(e) => dispatch({ payload: { e }, type: "initiateSubmit" })}
           className="flex justify-center"
         >
-          <div className="flex flex-col w-1/2 divide-y-2">
+          <div className="flex flex-col w-full md:w-2/3 lg:1/2 divide-y-2">
             {venues.map(({ id, name }) => (
               <VenueRow
                 {...{
@@ -141,7 +146,7 @@ const Venues = ({ venues, auth, errors }) => {
                   key: id,
                   name,
                   editMode: editMode === id,
-                  formErrors,
+                  error: formErrors.name,
                   onEditMode,
                   destroy,
                   onSubmit,
@@ -156,7 +161,7 @@ const Venues = ({ venues, auth, errors }) => {
                   id: "",
                   name: "",
                   editMode: true,
-                  formErrors,
+                  error: formErrors.name,
                   onEditMode,
                   destroy,
                   onSubmit,
@@ -169,6 +174,7 @@ const Venues = ({ venues, auth, errors }) => {
               {(editMode || createNew) && (
                 <>
                   <Button
+                    data-testid="venues-submit-button"
                     className="mt-4 w-full md:w-1/2 justify-center"
                     disabled={disabled && !processing}
                     type="submit"
@@ -176,6 +182,7 @@ const Venues = ({ venues, auth, errors }) => {
                     Submit
                   </Button>
                   <Button
+                    data-testid="venues-cancel-button"
                     className="mt-4 w-full md:w-1/2 justify-center"
                     disabled={disabled && !processing}
                     onClick={onCancel}
@@ -187,6 +194,7 @@ const Venues = ({ venues, auth, errors }) => {
               )}
               {!editMode && !createNew && (
                 <Button
+                  data-testid="create-venue-button"
                   className="mt-4 w-full md:w-1/2 justify-center"
                   disabled={disabled && !processing}
                   onClick={onCreateNew}

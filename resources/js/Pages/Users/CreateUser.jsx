@@ -4,12 +4,14 @@ import { Button, Header, Input, PageContentWrapper } from "@/Components";
 import { Head, useForm } from "@inertiajs/inertia-react";
 import Authenticated from "@/Layouts/Authenticated";
 import { onHandleFormChange } from "@/utils";
+import { useRoute } from "@/hooks";
 
 const CreateUser = ({ auth, errors }) => {
   const { data, setData, post } = useForm({
     name: "",
     email: "",
   });
+  const route = useRoute();
 
   const onSubmit = (e) => {
     e.preventDefault();

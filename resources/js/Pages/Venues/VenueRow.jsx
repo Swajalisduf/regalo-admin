@@ -4,8 +4,10 @@ import { Button, Input } from "@/Components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "@inertiajs/inertia-react";
+import { useRoute } from "@/hooks";
 
 const DeleteVenueButton = ({ id, destroy }) => {
+  const route = useRoute();
   const onDelete = (e) => {
     e.preventDefault();
     destroy(route("venues.delete", { id }), {
@@ -24,7 +26,7 @@ const VenueRow = ({
   id,
   name,
   editMode,
-  formErrors,
+  error,
   onEditMode,
   destroy,
   onSubmit,
@@ -52,18 +54,24 @@ const VenueRow = ({
   }, [data.name, editMode, submitting]);
 
   return (
-    <div className="flex divide-x-2 p- items-center text-left justify-between">
+    <div
+      data-testid={id ? `venue-row-${id}` : `venue-row-create`}
+      className="flex divide-x-2 p- items-center text-left justify-between"
+    >
       <div className="w-1/6">ID: {id || "--"}</div>
       <div className="flex w-2/3 justify-left pl-4">
         {editMode ? (
           <Input
             className="my-2 w-full"
+            data-testid={
+              id ? `venue-edit-name-input` : `venue-create-name-input`
+            }
             type="text"
             name="name"
             autoComplete="name"
             handleChange={(e) => onHandleFormChange(e, setData)}
             value={data.name}
-            error={formErrors.name}
+            error={error}
           />
         ) : (
           <span className="my-2 px-3 py-2 border border-transparent">
@@ -74,10 +82,18 @@ const VenueRow = ({
       <div className="flex w-1/6 gap-x-2 justify-center">
         {!editMode && (
           <>
-            <Button type="button" onClick={(e) => onEditMode(e, id)}>
+            <Button
+              data-testid={`venue-edit-${id}`}
+              type="button"
+              onClick={(e) => onEditMode(e, id)}
+            >
               <FontAwesomeIcon icon={faPencil} />
             </Button>
-            <DeleteVenueButton id={id} destroy={destroy} />
+            <DeleteVenueButton
+              data-testid={`venue-delete-${id}`}
+              id={id}
+              destroy={destroy}
+            />
           </>
         )}
       </div>
