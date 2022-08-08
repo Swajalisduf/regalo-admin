@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer } from "react";
 
 import Authenticated from "@/Layouts/Authenticated";
-import { Button, Header, PageContentWrapper } from "@/Components";
+import { Button, Header, Modal, PageContentWrapper } from "@/Components";
 import { useRoute } from "@/hooks";
 import { Head, useForm } from "@inertiajs/inertia-react";
 
@@ -32,11 +32,23 @@ const Venues = ({ venues, auth }) => {
     }
     switch (type) {
       case "cancel":
-        return { ...state, editMode: false, error: null, createNew: false };
+        return {
+          ...state,
+          createNew: false,
+          disabled: false,
+          editMode: false,
+          error: null,
+          modalOpen: false,
+        };
+      case "confirm":
+        return { ...state, activeId: payload.id, modalOpen: true };
       case "createNew":
         return { ...state, editMode: false, createNew: true };
+      case "delete":
+        destroy(route("venues.delete", { id: payload.id }));
+        return { ...state, modalOpen: false };
       case "disabled":
-        return { ...state, disabled: true };
+        return { ...state, disabled: payload.disabled };
       case "edit":
         return { ...state, editMode: payload.id, createNew: false };
       case "error":
@@ -67,6 +79,11 @@ const Venues = ({ venues, auth }) => {
       case "initiateSubmit":
         return { ...state, submitting: true };
       case "submit":
+        if (!payload.submitName) {
+          setError("name", "Venue name cannnot be empty");
+          reset();
+          return { ...state, submitting: false };
+        }
         setData("name", payload.submitName);
         return state;
       default:
@@ -75,22 +92,30 @@ const Venues = ({ venues, auth }) => {
   };
 
   const initialState = {
+    activeId: null,
     createNew: false,
     editMode: false,
     disabled: false,
+    modalOpen: false,
     submitting: false,
   };
 
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const { createNew, disabled, editMode, submitting } = state;
+  const { activeId, createNew, disabled, editMode, modalOpen, submitting } =
+    state;
 
   const onCancel = (e) => dispatch({ payload: { e }, type: "cancel" });
+  const onConfirm = (e) =>
+    dispatch({ payload: { e, id: e.target.value }, type: "delete" });
+  const onDelete = (e) =>
+    dispatch({ payload: { e, id: e.target.value }, type: "confirm" });
   const onCreateNew = (e) => dispatch({ payload: { e }, type: "createNew" });
   const onEditMode = (e, id) => dispatch({ payload: { e, id }, type: "edit" });
   const onSubmit = (submitName, venueId = null) =>
     dispatch({ payload: { submitName, venueId }, type: "submit" });
-  const setDisabled = () => dispatch({ type: "disabled" });
+  const setDisabled = (disabled) =>
+    dispatch({ type: "disabled", payload: { disabled } });
 
   useEffect(() => {
     if (isDirty && submitting && data.name) {
@@ -125,6 +150,10 @@ const Venues = ({ venues, auth }) => {
     }
   }, [editMode]);
 
+  useEffect(() => {
+    setDisabled(processing);
+  }, [processing]);
+
   return (
     <Authenticated
       {...{
@@ -135,7 +164,10 @@ const Venues = ({ venues, auth }) => {
       <Head title="Venues" />
       <PageContentWrapper data-testid="venues">
         <form
-          onSubmit={(e) => dispatch({ payload: { e }, type: "initiateSubmit" })}
+          onSubmit={(e) => {
+            e.preventDefault(); // dispatch prevent does not work here
+            dispatch({ payload: { e }, type: "initiateSubmit" });
+          }}
           className="flex justify-center"
         >
           <div className="flex flex-col w-full md:w-2/3 lg:1/2 divide-y-2">
@@ -147,8 +179,9 @@ const Venues = ({ venues, auth }) => {
                   name,
                   editMode: editMode === id,
                   error: formErrors.name,
+                  disabled,
                   onEditMode,
-                  destroy,
+                  onDelete,
                   onSubmit,
                   setDisabled,
                   submitting,
@@ -162,8 +195,9 @@ const Venues = ({ venues, auth }) => {
                   name: "",
                   editMode: true,
                   error: formErrors.name,
+                  disabled,
                   onEditMode,
-                  destroy,
+                  onDelete,
                   onSubmit,
                   setDisabled,
                   submitting,
@@ -175,16 +209,15 @@ const Venues = ({ venues, auth }) => {
                 <>
                   <Button
                     data-testid="venues-submit-button"
-                    className="mt-4 w-full md:w-1/2 justify-center"
-                    disabled={disabled && !processing}
+                    className="btn-primary mt-4 w-full md:w-auto justify-center"
+                    disabled={processing}
                     type="submit"
                   >
                     Submit
                   </Button>
                   <Button
                     data-testid="venues-cancel-button"
-                    className="mt-4 w-full md:w-1/2 justify-center"
-                    disabled={disabled && !processing}
+                    className="btn-secondary mt-4 w-full md:w-auto justify-center"
                     onClick={onCancel}
                     type="button"
                   >
@@ -195,8 +228,8 @@ const Venues = ({ venues, auth }) => {
               {!editMode && !createNew && (
                 <Button
                   data-testid="create-venue-button"
-                  className="mt-4 w-full md:w-1/2 justify-center"
-                  disabled={disabled && !processing}
+                  className="btn-primary mt-4 justify-center"
+                  disabled={disabled}
                   onClick={onCreateNew}
                   type="button"
                 >
@@ -206,6 +239,31 @@ const Venues = ({ venues, auth }) => {
             </div>
           </div>
         </form>
+        <Modal isOpen={modalOpen}>
+          <div className="flex flex-col gap-y-6">
+            <p className="text-lg">
+              Are you sure you want to delete this venue?
+            </p>
+            <div className="flex justify-end gap-x-2">
+              <Button
+                data-testid="venue-confirm-delete"
+                className="btn-primary"
+                disabled={disabled && !processing}
+                onClick={onConfirm}
+                value={activeId}
+              >
+                Delete Venue
+              </Button>
+              <Button
+                data-testid="venue-cancel-delete"
+                className="btn-secondary"
+                onClick={(e) => dispatch({ payload: { e }, type: "cancel" })}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </Modal>
       </PageContentWrapper>
     </Authenticated>
   );

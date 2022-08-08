@@ -1,6 +1,6 @@
 import React from "react";
 
-import { fireEvent, prettyDOM, render } from "@testing-library/react";
+import { fireEvent, render } from "@testing-library/react";
 import Venues from "./";
 
 jest.mock("@/hooks");
@@ -16,7 +16,7 @@ const auth = {
   },
 };
 
-describe("Venue component", () => {
+describe("Venues component", () => {
   let rendered;
 
   beforeEach(() => {
@@ -59,7 +59,7 @@ describe("Venue component", () => {
   });
 
   it("should be able to update an existing venue", () => {
-    const { getByTestId, debug } = rendered;
+    const { getByTestId } = rendered;
     const updatedVenueName = "Test Name 1 Updated";
     const venueEdit1 = getByTestId("venue-edit-1");
 
@@ -81,11 +81,24 @@ describe("Venue component", () => {
     expect(mockInertiaPut).toBeCalled();
   });
 
-  it.skip("should be able to delete a venue", () => {
-    // TODO: Write test after modal is created
+  it("should be able to delete an existing venue", () => {
+    const { getByTestId } = rendered;
+    const venueDelete1 = getByTestId("venue-delete-1");
+
+    fireEvent.click(venueDelete1);
+
+    const modal = getByTestId("modal");
+    const confirmDelete = getByTestId("venue-confirm-delete");
+
+    expect(modal).toBeInTheDocument();
+    expect(confirmDelete).toBeInTheDocument();
+
+    fireEvent.click(confirmDelete);
+
+    expect(mockInertiaDelete).toBeCalled();
   });
 
-  it("should show error message if create venue already exists", () => {
+  it("should show error message if venue already exists on submit", () => {
     const { getByTestId } = rendered;
     const createButton = getByTestId("create-venue-button");
     const existingVenueName = venues[0].name;
@@ -105,6 +118,32 @@ describe("Venue component", () => {
     });
 
     expect(createVenueNameInput.value).toBe(existingVenueName);
+
+    fireEvent.click(venuesSubmitButton);
+
+    const error = getByTestId("name-error");
+    expect(error).toBeInTheDocument();
+  });
+
+  it("should show error message if venue is empty on submit", () => {
+    const { getByTestId } = rendered;
+    const createButton = getByTestId("create-venue-button");
+
+    fireEvent.click(createButton);
+
+    const createVenueRow = getByTestId("venue-row-create");
+    const createVenueNameInput = getByTestId("venue-create-name-input");
+    const venuesSubmitButton = getByTestId("venues-submit-button");
+
+    expect(createVenueRow).toBeInTheDocument();
+    expect(createVenueNameInput).toBeInTheDocument();
+    expect(venuesSubmitButton).toBeInTheDocument();
+
+    fireEvent.change(createVenueNameInput, {
+      target: { value: "" },
+    });
+
+    expect(createVenueNameInput.value).toBe("");
 
     fireEvent.click(venuesSubmitButton);
 

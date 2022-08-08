@@ -44,7 +44,7 @@ class VenueController extends Controller
       Venue::findOrFail($id)->update([
         'name' => $request->name,
       ]);
-
+      
       return redirect()->route('venues.view', [], 303);
     }
 }

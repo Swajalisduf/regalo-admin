@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .btn-primary {
+        @apply bg-sky-500 border-2 hover:border-sky-900 !important;
+    }
+    .btn-secondary {
+        @apply bg-sky-200 text-sky-900 border-2 hover:border-sky-900 !important;
+    }
+    .btn-alert {
+        @apply bg-red-400 border-2 hover:border-red-900 !important;
+    }
+}

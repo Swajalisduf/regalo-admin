@@ -26,7 +26,7 @@ export default function Input({
   return (
     <>
       {label && <Label className="mt-4" forInput={name} value={label} />}
-      <div className="flex flex-col items-start">
+      <div className="flex flex-col items-start w-full relative">
         <input
           data-testid={dataTestId}
           type={type}
@@ -42,7 +42,10 @@ export default function Input({
           onChange={(e) => handleChange(e)}
         />
         {error && (
-          <small data-testid={`${name}-error`} className="text-error">
+          <small
+            data-testid={`${name}-error`}
+            className="text-red-500 absolute -bottom-5 left-2"
+          >
             {error}
           </small>
         )}
