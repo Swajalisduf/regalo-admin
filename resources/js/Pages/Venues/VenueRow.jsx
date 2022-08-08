@@ -35,7 +35,7 @@ const VenueRow = ({
       className="h-20 flex items-center justify-between text-left md:divide-x-2 p-2"
     >
       <div className="hidden md:flex w-1/6">ID: {id || "--"}</div>
-      <div className="flex md:w-2/3 justify-left md:px-2">
+      <div className="flex w-full md:w-2/3 justify-left md:px-2">
         {editMode ? (
           <Input
             className="w-full"
@@ -53,7 +53,12 @@ const VenueRow = ({
           <span className="px-3 border border-transparent">{name}</span>
         )}
       </div>
-      <div className="flex md:w-1/6 gap-x-2 justify-center">
+      <div
+        className={
+          `flex md:w-1/6 gap-x-2 justify-center` +
+          ` ${editMode ? "hidden md:block" : ""}`
+        }
+      >
         {!editMode && (
           <>
             <Button

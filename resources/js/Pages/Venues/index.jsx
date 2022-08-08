@@ -228,7 +228,7 @@ const Venues = ({ venues, auth }) => {
               {!editMode && !createNew && (
                 <Button
                   data-testid="create-venue-button"
-                  className="btn-primary mt-4 justify-center"
+                  className="btn-primary w-1/2 md:w-auto mt-4 justify-center"
                   disabled={disabled}
                   onClick={onCreateNew}
                   type="button"
