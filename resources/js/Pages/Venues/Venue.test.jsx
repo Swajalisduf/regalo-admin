@@ -123,6 +123,34 @@ describe("Venues component", () => {
 
     const error = getByTestId("name-error");
     expect(error).toBeInTheDocument();
+    expect(error.textContent).toBe("Venue already exists");
+  });
+
+  it("should show error message if venue is empty on submit", () => {
+    const { getByTestId } = rendered;
+    const createButton = getByTestId("create-venue-button");
+
+    fireEvent.click(createButton);
+
+    const createVenueRow = getByTestId("venue-row-create");
+    const createVenueNameInput = getByTestId("venue-create-name-input");
+    const venuesSubmitButton = getByTestId("venues-submit-button");
+
+    expect(createVenueRow).toBeInTheDocument();
+    expect(createVenueNameInput).toBeInTheDocument();
+    expect(venuesSubmitButton).toBeInTheDocument();
+
+    fireEvent.change(createVenueNameInput, {
+      target: { value: "" },
+    });
+
+    expect(createVenueNameInput.value).toBe("");
+
+    fireEvent.click(venuesSubmitButton);
+
+    const error = getByTestId("name-error");
+    expect(error).toBeInTheDocument();
+    expect(error.textContent).toBe("Venue name cannot be empty");
   });
 
   it("should show error message if venue is empty on submit", () => {

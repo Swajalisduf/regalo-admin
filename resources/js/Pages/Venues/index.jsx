@@ -1,158 +1,68 @@
-import React, { useEffect, useReducer } from "react";
+import React from "react";
 
 import Authenticated from "@/Layouts/Authenticated";
 import { Button, Header, Modal, PageContentWrapper } from "@/Components";
-import { useRoute } from "@/hooks";
-import { Head, useForm } from "@inertiajs/inertia-react";
+import { useFormWithApi } from "@/hooks";
+import { Head } from "@inertiajs/inertia-react";
 
 import VenueRow from "./VenueRow";
 
-const Venues = ({ venues, auth }) => {
-  const {
-    data,
-    delete: destroy,
-    clearErrors,
-    isDirty,
-    errors: formErrors,
-    post,
-    processing,
-    put,
-    reset,
-    setData,
-    setError,
-  } = useForm({
+const Venues = ({ venues, auth, errors }) => {
+  const fields = {
     id: "",
     name: "",
-  });
-  const route = useRoute();
-
-  const reducer = (state, { payload = {}, type }) => {
-    if (payload.e) {
-      payload.e.preventDefault();
-    }
-    switch (type) {
-      case "cancel":
-        return {
-          ...state,
-          createNew: false,
-          disabled: false,
-          editMode: false,
-          error: null,
-          modalOpen: false,
-        };
-      case "confirm":
-        return { ...state, activeId: payload.id, modalOpen: true };
-      case "createNew":
-        return { ...state, editMode: false, createNew: true };
-      case "delete":
-        destroy(route("venues.delete", { id: payload.id }));
-        return { ...state, modalOpen: false };
-      case "disabled":
-        return { ...state, disabled: payload.disabled };
-      case "edit":
-        return { ...state, editMode: payload.id, createNew: false };
-      case "error":
-        setError(payload.field, payload.message);
-        reset();
-        return {
-          ...state,
-          submitting: false,
-        };
-      case "create":
-        post(route("venues.create"));
-        return {
-          ...state,
-          createNew: false,
-          editMode: false,
-          error: null,
-          submitting: false,
-        };
-      case "update":
-        put(route("venues.update", { id: payload.id }));
-        return {
-          ...state,
-          submitting: false,
-          editMode: false,
-          error: null,
-          createNew: false,
-        };
-      case "initiateSubmit":
-        return { ...state, submitting: true };
-      case "submit":
-        if (!payload.submitName) {
-          setError("name", "Venue name cannnot be empty");
-          reset();
-          return { ...state, submitting: false };
-        }
-        setData("name", payload.submitName);
-        return state;
-      default:
-        throw new Error("Invalid action");
-    }
   };
 
-  const initialState = {
+  const routes = {
     activeId: null,
-    createNew: false,
-    editMode: false,
-    disabled: false,
+    delete: "venues.delete",
+    post: "venues.create",
     modalOpen: false,
-    submitting: false,
+    put: "venues.update",
   };
 
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const validations = [
+    {
+      field: "name",
+      message: "Venue already exists",
+      validate: ({ name }) =>
+        !venues.find(
+          (venue) => venue.name.toLowerCase() === name.toLowerCase()
+        ),
+    },
+    {
+      field: "name",
+      message: "Venue name cannot be empty",
+      validate: ({ name }) => !!name,
+    },
+  ];
 
-  const { activeId, createNew, disabled, editMode, modalOpen, submitting } =
-    state;
+  const { formState, handlers } = useFormWithApi({
+    fields,
+    routes,
+    validations,
+  });
 
-  const onCancel = (e) => dispatch({ payload: { e }, type: "cancel" });
-  const onConfirm = (e) =>
-    dispatch({ payload: { e, id: e.target.value }, type: "delete" });
-  const onDelete = (e) =>
-    dispatch({ payload: { e, id: e.target.value }, type: "confirm" });
-  const onCreateNew = (e) => dispatch({ payload: { e }, type: "createNew" });
-  const onEditMode = (e, id) => dispatch({ payload: { e, id }, type: "edit" });
-  const onSubmit = (submitName, venueId = null) =>
-    dispatch({ payload: { submitName, venueId }, type: "submit" });
-  const setDisabled = (disabled) =>
-    dispatch({ type: "disabled", payload: { disabled } });
+  const {
+    activeId,
+    createNew,
+    data,
+    disabled,
+    editMode,
+    errors: formErrors,
+    confirmDelete: modalOpen,
+    processing,
+  } = formState;
 
-  useEffect(() => {
-    if (isDirty && submitting && data.name) {
-      if (
-        venues.find(
-          (venue) => venue.name.toLowerCase() === data.name.toLowerCase()
-        )
-      ) {
-        dispatch({
-          payload: { field: "name", message: "Venue already exists" },
-          type: "error",
-        });
-        return;
-      }
-
-      if (data.id) {
-        dispatch({ type: "update", payload: { id: data.id } });
-        return;
-      }
-      dispatch({ type: "create" });
-    }
-  }, [data.id, data.name, isDirty, submitting, venues]);
-
-  useEffect(() => {
-    reset();
-    clearErrors();
-  }, [createNew, editMode]);
-
-  useEffect(() => {
-    if (editMode) {
-      setData("id", editMode);
-    }
-  }, [editMode]);
-
-  useEffect(() => {
-    setDisabled(processing);
-  }, [processing]);
+  const {
+    onCancel,
+    onChange,
+    onDelete,
+    onConfirmDelete,
+    onCreateNew,
+    onEdit,
+    onSubmit,
+  } = handlers;
 
   return (
     <Authenticated
@@ -163,28 +73,21 @@ const Venues = ({ venues, auth }) => {
     >
       <Head title="Venues" />
       <PageContentWrapper data-testid="venues">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault(); // dispatch prevent does not work here
-            dispatch({ payload: { e }, type: "initiateSubmit" });
-          }}
-          className="flex justify-center"
-        >
+        <form onSubmit={onSubmit} className="flex justify-center">
           <div className="flex flex-col w-full md:w-2/3 lg:1/2 divide-y-2">
             {venues.map(({ id, name }) => (
               <VenueRow
                 {...{
                   id,
                   key: id,
+                  data,
                   name,
-                  editMode: editMode === id,
+                  editMode: activeId === id,
                   error: formErrors.name,
-                  disabled,
-                  onEditMode,
-                  onDelete,
-                  onSubmit,
-                  setDisabled,
-                  submitting,
+                  handleChange: onChange,
+                  processing,
+                  onEdit,
+                  onConfirmDelete,
                 }}
               />
             ))}
@@ -192,15 +95,12 @@ const Venues = ({ venues, auth }) => {
               <VenueRow
                 {...{
                   id: "",
+                  data,
                   name: "",
                   editMode: true,
                   error: formErrors.name,
-                  disabled,
-                  onEditMode,
-                  onDelete,
-                  onSubmit,
-                  setDisabled,
-                  submitting,
+                  handleChange: onChange,
+                  processing,
                 }}
               />
             )}
@@ -218,7 +118,10 @@ const Venues = ({ venues, auth }) => {
                   <Button
                     data-testid="venues-cancel-button"
                     className="btn-secondary mt-4 w-full md:w-auto justify-center"
-                    onClick={onCancel}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onCancel(e);
+                    }}
                     type="button"
                   >
                     Cancel
@@ -249,7 +152,7 @@ const Venues = ({ venues, auth }) => {
                 data-testid="venue-confirm-delete"
                 className="btn-primary"
                 disabled={disabled && !processing}
-                onClick={onConfirm}
+                onClick={onDelete}
                 value={activeId}
               >
                 Delete Venue
@@ -257,7 +160,7 @@ const Venues = ({ venues, auth }) => {
               <Button
                 data-testid="venue-cancel-delete"
                 className="btn-secondary"
-                onClick={(e) => dispatch({ payload: { e }, type: "cancel" })}
+                onClick={onCancel}
               >
                 Cancel
               </Button>
