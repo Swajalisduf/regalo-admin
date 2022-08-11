@@ -9,7 +9,7 @@ use App\Models\Show;
 class ShowController extends Controller
 {
     public function index () {
-      return Inertia::render('Shows/index', [
+      return Inertia::render('Shows/Shows', [
         'shows' => Show::all(),
       ]);
     }

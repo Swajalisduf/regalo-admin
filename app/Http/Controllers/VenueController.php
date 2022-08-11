@@ -9,7 +9,7 @@ use App\Models\Venue;
 class VenueController extends Controller
 {
     public function index () {
-      return Inertia::render('Venues/index', [
+      return Inertia::render('Venues/Venues', [
         'venues' => Venue::all(),
       ]);
     }

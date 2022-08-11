@@ -1,11 +1,12 @@
 <?php
 
 use App\Http\Controllers\ShowController;
+use App\Http\Controllers\TheaterCompanyController;
+use App\Http\Controllers\VenueController;
 use App\Http\Resources\UserResource;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\VenueController;
 use App\Models\User;
 
 /*
@@ -38,7 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
   Route::prefix('/users')->group(function () {
     Route::get('/', function () {
-      return Inertia::render('Users/index', ['users' => User::get()]);
+      return Inertia::render('Users/Users', ['users' => User::get()]);
     })->name('users.view');
     Route::get('/create', function () {
       return Inertia::render('Users/CreateUser');
@@ -58,6 +59,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
   Route::controller(ShowController::class)->group(function () {
     Route::get('/shows', 'index')->name('shows.view');
+  });
+
+  Route::controller(TheaterCompanyController::class)->group(function () {
+    Route::get('/theater_companies', 'index')->name('theater_companies.view');
   });
 });
 
