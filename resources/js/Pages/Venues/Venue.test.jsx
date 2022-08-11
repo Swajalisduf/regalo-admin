@@ -1,7 +1,7 @@
 import React from "react";
 
 import { fireEvent, render } from "@testing-library/react";
-import Venues from "./";
+import Venues from "./Venues";
 
 jest.mock("@/hooks");
 

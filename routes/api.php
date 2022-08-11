@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MeasurementController;
 use App\Http\Controllers\ShowController;
+use App\Http\Controllers\TheaterCompanyController;
 use App\Http\Controllers\VenueController;
 
 /*
@@ -37,6 +38,11 @@ Route::middleware('auth.session')->group(function () {
     Route::post('/', 'create')->name('shows.create');
     Route::put('/{id}', 'update')->name('shows.update');
     Route::delete('/{id}', 'delete')->name('shows.delete');
+  });
+  Route::controller(TheaterCompanyController::class)->prefix('theater_companies')->group(function () {
+    Route::post('/', 'create')->name('theater_companies.create');
+    Route::put('/{id}', 'update')->name('theater_companies.update');
+    Route::delete('/{id}', 'delete')->name('theater_companies.delete');
   });
   Route::controller(VenueController::class)->prefix('venues')->group(function () {
     Route::post('/', 'create')->name('venues.create');

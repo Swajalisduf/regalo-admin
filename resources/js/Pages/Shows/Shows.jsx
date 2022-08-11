@@ -22,7 +22,7 @@ const Shows = ({ shows, auth, errors }) => {
       field: "name",
       message: "Show already exists",
       validate: ({ name }) =>
-        !shows.find((venue) => venue.name.toLowerCase() === name.toLowerCase()),
+        !shows.find((show) => show.name.toLowerCase() === name.toLowerCase()),
     },
     {
       field: "name",
@@ -36,27 +36,6 @@ const Shows = ({ shows, auth, errors }) => {
     routes,
     validations,
   });
-
-  const {
-    activeId,
-    createNew,
-    data,
-    disabled,
-    editMode,
-    errors: formErrors,
-    confirmDelete: modalOpen,
-    processing,
-  } = formState;
-
-  const {
-    onCancel,
-    onChange,
-    onDelete,
-    onConfirmDelete,
-    onCreateNew,
-    onEdit,
-    onSubmit,
-  } = handlers;
 
   return (
     <Authenticated
