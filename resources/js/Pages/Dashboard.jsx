@@ -14,7 +14,14 @@ export default function Dashboard(props) {
       <Head title="Dashboard" />
       <PageContentWrapper>
         <h3>Quick Links</h3>
-        <Link href="/venues">Venues</Link>
+        <div className="flex flex-col pl-4">
+          <Link className="text-sky-500" href="/venues">
+            Venues
+          </Link>
+          <Link className="text-sky-500" href="/shows">
+            Shows
+          </Link>
+        </div>
       </PageContentWrapper>
     </Authenticated>
   );

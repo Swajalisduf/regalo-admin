@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MeasurementController;
+use App\Http\Controllers\ShowController;
 use App\Http\Controllers\VenueController;
 
 /*
@@ -31,6 +32,11 @@ Route::middleware('auth.session')->group(function () {
       Route::post('/', [MeasurementController::class, 'create'])->name('users.measurements.create');
       Route::put('/', [MeasurementController::class, 'update'])->name('users.measurements.update');
     });
+  });
+  Route::controller(ShowController::class)->prefix('shows')->group(function () {
+    Route::post('/', 'create')->name('shows.create');
+    Route::put('/{id}', 'update')->name('shows.update');
+    Route::delete('/{id}', 'delete')->name('shows.delete');
   });
   Route::controller(VenueController::class)->prefix('venues')->group(function () {
     Route::post('/', 'create')->name('venues.create');

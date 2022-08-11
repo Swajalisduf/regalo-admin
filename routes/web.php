@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ShowController;
 use App\Http\Resources\UserResource;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -53,6 +54,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
   Route::controller(VenueController::class)->group(function () {
     Route::get('/venues', 'index')->name('venues.view');
+  });
+
+  Route::controller(ShowController::class)->group(function () {
+    Route::get('/shows', 'index')->name('shows.view');
   });
 });
 

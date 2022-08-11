@@ -9,21 +9,19 @@ export default function Button({
   "data-testid": dataTestId,
   href = "",
   method = "get",
-  processing,
-  type = "submit",
-  onClick = () => {},
+  disabled = "",
+  ...rest
 }) {
   return (
     <button
-      type={type}
       className={
         `inline-flex items-center px-4 py-2 bg-gray-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest active:bg-gray-900 transition ease-in-out duration-150 ${
-          processing && "opacity-25"
+          disabled && "opacity-25"
         } ` + className
       }
       data-testid={dataTestId}
-      disabled={processing}
-      onClick={onClick}
+      disabled={disabled}
+      {...rest}
     >
       {href ? (
         <Link href={href} method={method}>
