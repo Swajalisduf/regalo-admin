@@ -33,7 +33,7 @@ return new class extends Migration
         $table->string('name')->unique();
         $table->string('author')->nullable();
         $table->text('synopsis')->nullable();
-        $table->foreignId('licensing_agency_id')->constrained()->nullable();
+        $table->foreignId('licensing_agency_id')->nullable();
         $table->timestamps();
         $table->softDeletes();
       });
@@ -66,7 +66,7 @@ return new class extends Migration
       Schema::dropIfExists('production_user');
       Schema::dropIfExists('productions');
       Schema::dropIfExists('shows');
-      Schema::dropIfExists('licencing_agencies');
+      Schema::dropIfExists('licensing_agencies');
       Schema::dropIfExists('venues');  
     }
 };

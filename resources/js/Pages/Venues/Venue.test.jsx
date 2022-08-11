@@ -34,14 +34,14 @@ describe("Venues component", () => {
 
   it("should be able to create a new venue", () => {
     const { getByTestId } = rendered;
-    const createButton = getByTestId("create-venue-button");
+    const createButton = getByTestId("venue-create-button");
     const newVenueName = "Test Venue 3";
 
     fireEvent.click(createButton);
 
     const createVenueRow = getByTestId("venue-row-create");
     const createVenueNameInput = getByTestId("venue-create-name-input");
-    const venuesSubmitButton = getByTestId("venues-submit-button");
+    const venuesSubmitButton = getByTestId("venue-submit-button");
 
     expect(createVenueRow).toBeInTheDocument();
     expect(createVenueNameInput).toBeInTheDocument();
@@ -65,7 +65,7 @@ describe("Venues component", () => {
 
     fireEvent.click(venueEdit1);
 
-    const venuesSubmitButton = getByTestId("venues-submit-button");
+    const venuesSubmitButton = getByTestId("venue-submit-button");
     const venueEditNameInput = getByTestId("venue-edit-name-input");
 
     expect(venueEditNameInput).toBeInTheDocument();
@@ -88,7 +88,7 @@ describe("Venues component", () => {
     fireEvent.click(venueDelete1);
 
     const modal = getByTestId("modal");
-    const confirmDelete = getByTestId("venue-confirm-delete");
+    const confirmDelete = getByTestId("venue-confirm-delete-button");
 
     expect(modal).toBeInTheDocument();
     expect(confirmDelete).toBeInTheDocument();
@@ -100,14 +100,14 @@ describe("Venues component", () => {
 
   it("should show error message if venue already exists on submit", () => {
     const { getByTestId } = rendered;
-    const createButton = getByTestId("create-venue-button");
+    const createButton = getByTestId("venue-create-button");
     const existingVenueName = venues[0].name;
 
     fireEvent.click(createButton);
 
     const createVenueRow = getByTestId("venue-row-create");
     const createVenueNameInput = getByTestId("venue-create-name-input");
-    const venuesSubmitButton = getByTestId("venues-submit-button");
+    const venuesSubmitButton = getByTestId("venue-submit-button");
 
     expect(createVenueRow).toBeInTheDocument();
     expect(createVenueNameInput).toBeInTheDocument();
@@ -128,13 +128,13 @@ describe("Venues component", () => {
 
   it("should show error message if venue is empty on submit", () => {
     const { getByTestId } = rendered;
-    const createButton = getByTestId("create-venue-button");
+    const createButton = getByTestId("venue-create-button");
 
     fireEvent.click(createButton);
 
     const createVenueRow = getByTestId("venue-row-create");
     const createVenueNameInput = getByTestId("venue-create-name-input");
-    const venuesSubmitButton = getByTestId("venues-submit-button");
+    const venuesSubmitButton = getByTestId("venue-submit-button");
 
     expect(createVenueRow).toBeInTheDocument();
     expect(createVenueNameInput).toBeInTheDocument();
@@ -155,13 +155,13 @@ describe("Venues component", () => {
 
   it("should show error message if venue is empty on submit", () => {
     const { getByTestId } = rendered;
-    const createButton = getByTestId("create-venue-button");
+    const createButton = getByTestId("venue-create-button");
 
     fireEvent.click(createButton);
 
     const createVenueRow = getByTestId("venue-row-create");
     const createVenueNameInput = getByTestId("venue-create-name-input");
-    const venuesSubmitButton = getByTestId("venues-submit-button");
+    const venuesSubmitButton = getByTestId("venue-submit-button");
 
     expect(createVenueRow).toBeInTheDocument();
     expect(createVenueNameInput).toBeInTheDocument();
@@ -181,14 +181,14 @@ describe("Venues component", () => {
 
   it("should clear errors after cancel", () => {
     const { getByTestId } = rendered;
-    const createButton = getByTestId("create-venue-button");
+    const createButton = getByTestId("venue-create-button");
     const existingVenueName = venues[0].name;
 
     fireEvent.click(createButton);
 
     const createVenueRow = getByTestId("venue-row-create");
     const createVenueNameInput = getByTestId("venue-create-name-input");
-    const venuesSubmitButton = getByTestId("venues-submit-button");
+    const venuesSubmitButton = getByTestId("venue-submit-button");
 
     expect(createVenueRow).toBeInTheDocument();
     expect(createVenueNameInput).toBeInTheDocument();
@@ -205,7 +205,7 @@ describe("Venues component", () => {
     const error = getByTestId("name-error");
     expect(error).toBeInTheDocument();
 
-    const cancelButton = getByTestId("venues-cancel-button");
+    const cancelButton = getByTestId("venue-cancel-button");
     fireEvent.click(cancelButton);
 
     fireEvent.click(createVenueRow);
@@ -214,7 +214,7 @@ describe("Venues component", () => {
 
   it("should clear errors after submit", () => {
     const { getByTestId } = rendered;
-    const createButton = getByTestId("create-venue-button");
+    const createButton = getByTestId("venue-create-button");
     const existingVenueName = venues[0].name;
     const newVenueName = "Test Venue 3";
 
@@ -222,7 +222,7 @@ describe("Venues component", () => {
 
     const createVenueRow = getByTestId("venue-row-create");
     const createVenueNameInput = getByTestId("venue-create-name-input");
-    const venuesSubmitButton = getByTestId("venues-submit-button");
+    const venuesSubmitButton = getByTestId("venue-submit-button");
 
     expect(createVenueRow).toBeInTheDocument();
     expect(createVenueNameInput).toBeInTheDocument();

@@ -10,6 +10,8 @@ import Modal from "./Modal";
 import NavLink from "./NavLink";
 import PageContentWrapper from "./PageContentWrapper";
 import ResponsiveNavLink from "./ResponsiveNavLink";
+import FormTable from "./FormTable";
+import FormTableRow from "./FormTable/FormTableRow";
 import ValidationErrors from "./ValidationErrors";
 
 export {
@@ -17,6 +19,8 @@ export {
   Button,
   Checkbox,
   Dropdown,
+  FormTable,
+  FormTableRow,
   Header,
   HeightInput,
   Input,
